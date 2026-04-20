@@ -18,7 +18,7 @@ module RAM #(
     reg [pDATA_WIDTH-1:0] _memory [0:(1 << pADDR_WIDTH)-1];
 
 
-    assign MEM_DATA = (MEM_CONTROL == 1'b1)? _memory[MEM_ADDR] : 8'bz ;
+    assign MEM_DATA = (MEM_CONTROL == 1'b1)? _memory[MEM_ADDR] : pDATA_WIDTH'bz ;
     always @(*) begin
         if (MEM_CONTROL == 0) begin
             _memory[MEM_ADDR] <= MEM_DATA;
