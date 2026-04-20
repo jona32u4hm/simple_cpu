@@ -7,11 +7,11 @@ module RAM #(
     inout   [pDATA_WIDTH-1:0] MEM_DATA
     );
 
-    initial begin
-        _memory[0] = 8'd1; 
+    initial begin //for the simulation, initialize memory using last four digits of student ID 
+        _memory[0] = 8'd4; 
         _memory[1] = 8'd0;
-        _memory[2] = 8'd4;
-        _memory[3] = 8'd7;
+        _memory[2] = 8'd8;
+        _memory[3] = 8'd3;
     end
 
     // Memory size
