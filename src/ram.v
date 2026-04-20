@@ -2,19 +2,27 @@ module RAM #(
     parameter pADDR_WIDTH = 12, 
     parameter pDATA_WIDTH = 8   
     )(
+    input   MEM_CONTROL,
     input   [pADDR_WIDTH-1:0] MEM_ADDR,
-    output  [pDATA_WIDTH-1:0] MEM_DATA
+    inout   [pDATA_WIDTH-1:0] MEM_DATA
     );
+
+    initial begin
+        _memory[0] = 8'd1; 
+        _memory[1] = 8'd0;
+        _memory[2] = 8'd4;
+        _memory[3] = 8'd7;
+    end
 
     // Memory size
     reg [pDATA_WIDTH-1:0] _memory [0:(1 << pADDR_WIDTH)-1];
 
-    always @(*) begin 
-        if (MEM_CONTROL == 0) begin //store in memory
+
+    assign MEM_DATA = (MEM_CONTROL == 1'b1)? _memory[MEM_ADDR] : 8'bz ;
+    always @(*) begin
+        if (MEM_CONTROL == 0) begin
             _memory[MEM_ADDR] <= MEM_DATA;
-        end else begin // load from memory
-            MEM_DATA = _memory[MEM_ADDR];
-        end
+        end 
     end
 
 endmodule
