@@ -1,0 +1,8 @@
+# Icarus Verilog y GTKwave
+*.out
+*.vcd
+build/
+
+# Yosys
+*.dot
+show.dot
