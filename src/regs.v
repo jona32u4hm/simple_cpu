@@ -15,7 +15,7 @@ module REG_FILE #(
     assign data_rs1 = _registers[addr_rs1];
     assign data_rs2 = _registers[addr_rs2];
 
-    always @(posedge CLK) begin
+    always @(negedge CLK) begin
         if (RESET) begin
             
         end else if (write_enable) begin 
