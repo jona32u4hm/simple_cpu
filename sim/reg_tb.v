@@ -5,7 +5,7 @@ module reg_file_tb;
     parameter DATA_WIDTH = 8;
 
     // REGFILE I/O
-    reg CLK, RESET, write_enable;
+    reg CLK, write_enable;
     reg  [ADDR_WIDTH-1:0] addr_rs1, addr_rs2, addr_rd;
     reg  [DATA_WIDTH-1:0] data_in;
     wire [DATA_WIDTH-1:0] data_rs1, data_rs2;
@@ -13,7 +13,6 @@ module reg_file_tb;
     // Instance
     REG_FILE uut (
         .CLK(CLK),
-        .RESET(RESET),
         .write_enable(write_enable),
         .addr_rs1(addr_rs1),
         .addr_rs2(addr_rs2),
@@ -33,12 +32,11 @@ module reg_file_tb;
 
         // Initialize
         CLK = 0;
-        RESET = 1;
         write_enable = 0;
         addr_rs1 = 0; addr_rs2 = 1; // only two regs anyway
         addr_rd = 0;
         data_in = 0;
-        #15 RESET = 0; // reset
+        #15 
         
         $display("--- Test Register File ---");
 
@@ -52,7 +50,7 @@ module reg_file_tb;
         $display("Wrote A: %h | Out RS1: %h", data_in, data_rs1);
 
         // Write reg B
-        @(negedge CLK);
+        @(posedge CLK);
         write_enable = 1;
         addr_rd = 1'b1;
         data_in = 8'h3C; // value to write
@@ -60,19 +58,15 @@ module reg_file_tb;
         write_enable = 0;
         $display("Wrote B: %h | Out RS2: %h", data_in, data_rs2);
 
+        data_in = 8'h26; // value to write (shouldnt be written because write is disabled)
+        $display("Write disbled, tried B: %h | Out RS2: %h should be different", data_in, data_rs2);
         // Simultaneous read
         #10;
         if (data_rs1 == 8'hA5 && data_rs2 == 8'h3C)
             $display("SUCCESS: Correct reading of A y B.");
         else
             $display("FAIL: Wrong data. A:%h B:%h", data_rs1, data_rs2);
-
-        // Reset
-        RESET = 1;
-        #10 RESET = 0;
-        #5;
-        if (data_rs1 == 0 && data_rs2 == 0)
-            $display("SUCCESS: Reset limpió los registros.");
+            
 
         #20;
         $finish;
