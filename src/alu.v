@@ -3,8 +3,7 @@ module ALU#(
         parameter pALU_WIDTH =  `ALU_OP_WIDTH,      // size of operation bus (2^1)
         parameter pDATA_WIDTH = 8
     )(
-        input  [pDATA_WIDTH-1:0] operand_1,
-        input  [pDATA_WIDTH-1:0] operand_2,
+        input  [pDATA_WIDTH-1:0] operand_1, operand_2,
         input  [pALU_WIDTH-1:0]  alu_op,   // (Opcode)
         output [pDATA_WIDTH-1:0] result, 
         output z_flag
