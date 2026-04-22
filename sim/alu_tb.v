@@ -24,8 +24,7 @@ module alu_tb;
                _SUB    = `ALU_SUB,
                _AND    = `ALU_AND, 
                _OR     = `ALU_OR, 
-               _BYPASS = `ALU_BYPASS,
-               _EQUAL  = `OP_EQUAL;
+               _BYPASS = `ALU_BYPASS;
 
 
 
