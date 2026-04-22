@@ -5,7 +5,7 @@ module ALU#(
     )(
         input  [pDATA_WIDTH-1:0] operand_1, operand_2,
         input  [pALU_WIDTH-1:0]  alu_op,   // (Opcode)
-        output [pDATA_WIDTH-1:0] result, 
+        output reg [pDATA_WIDTH-1:0] result, 
         output z_flag
     );
 
@@ -14,8 +14,7 @@ module ALU#(
                _SUB    = `ALU_SUB,
                _AND    = `ALU_AND, 
                _OR     = `ALU_OR, 
-               _BYPASS = `ALU_BYPASS,
-               _EQUAL  = `OP_EQUAL;
+               _BYPASS = `ALU_BYPASS;
 
     always @(*) begin
         case (alu_op)
