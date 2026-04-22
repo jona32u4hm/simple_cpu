@@ -1,15 +1,18 @@
 
 TB = sim/testbench.v
-OUT = build/salida.out
+OUT = build/output.out
 
 RAM_TB = sim/ram_tb.v
-RAM_OUT = build/ram_salida.out
+RAM_OUT = build/ram.out
 
 ROM_TB = sim/rom_tb.v
-ROM_OUT = build/rom_salida.out
+ROM_OUT = build/rom.out
 
 REG_TB = sim/reg_tb.v
-REG_OUT = build/reg_salida.out
+REG_OUT = build/reg.out
+
+ALU_TB = sim/alu_tb.v
+ALU_OUT = build/alu.out
 
 all: sim
 
@@ -40,3 +43,10 @@ reg_test:
 	iverilog -o $(REG_OUT) $(REG_TB) src/regs.v
 	vvp $(REG_OUT)
 	gtkwave reg_file_test.vcd
+
+
+alu_test:
+	@mkdir -p build
+	iverilog -o $(ALU_OUT) $(ALU_TB) src/alu.v
+	vvp $(ALU_OUT)
+	gtkwave alu_test.vcd
