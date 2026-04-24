@@ -16,7 +16,7 @@ module ROM(
 
             // STEP 2: ADD A plus B --> B
             // Asumiendo opcode 4'h0 para ADD y select_ab=1 para destino B
-            12'h002: {OPCODE, AB_SELECT, OP_ADDR} = {4'h0, 1'b1, 8'h00}; 
+            12'h002: {OPCODE, AB_SELECT, OP_ADDR} = {4'h9, 1'b1, 8'h00}; 
 
             // STEP 3: STORE A at 015
             // Asumiendo opcode 4'h4 para STORE

@@ -1,4 +1,4 @@
-`include "include/aludefines.vh"
+`include "include/alu_defines.vh"
 module ALU#(
         parameter pALU_WIDTH =  `ALU_OP_WIDTH,      // size of operation bus (2^1)
         parameter pDATA_WIDTH = 8
@@ -13,7 +13,7 @@ module ALU#(
     localparam _ADD    = `ALU_ADD,
                _SUB    = `ALU_SUB,
                _AND    = `ALU_AND, 
-               _OR     = `ALU_OR, 
+               _IOR    = `ALU_IOR, 
                _BYPASS = `ALU_BYPASS;
 
     always @(*) begin
@@ -21,7 +21,7 @@ module ALU#(
             _ADD:       result = operand_1 + operand_2;
             _SUB:       result = operand_1 - operand_2;
             _AND:       result = operand_1 & operand_2;
-            _OR:        result = operand_1 | operand_2;
+            _IOR:       result = operand_1 | operand_2;
             default: result = 0;
         endcase
     end

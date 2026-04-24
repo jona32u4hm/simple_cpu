@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "include/aludefines.vh"
+`include "include/alu_defines.vh"
 module alu_tb;
     parameter ALU_WIDTH =  `ALU_OP_WIDTH;      // size of operation bus (2^1)
     parameter DATA_WIDTH = 8;
