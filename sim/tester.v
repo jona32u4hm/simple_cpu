@@ -2,21 +2,19 @@ module tester (
     output reg clk,
     output reg reset
 );
-    // Generador de Reloj (Frecuencia de 100MHz simulada)
     initial begin
         clk = 0;
-        forever #5 clk = ~clk; // Periodo de 10ns
+        forever #5 clk = ~clk; // Period: 10ns
     end
 
-    // Secuencia de Reset y Fin de Simulación
     initial begin
-        reset = 0;        // Iniciamos en Reset
-        #20 reset = 1;    // Soltamos Reset tras 2 ciclos
+        reset = 0;        // Reset
+        #20 reset = 1;    
         
-        // Dejamos que el procesador corra por un tiempo
+        // Processor executes ROM
         #1000; 
         
-        $display("Simulacion finalizada a los %t", $time);
+        $display("end of simulation");
         $finish;
     end
 endmodule

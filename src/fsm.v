@@ -32,7 +32,7 @@ module FSM#(
         MEM_CONTROL <= 1;
     end
 
-    // state machine:
+    // state machine combinational logic:
     always @(*) begin 
 
         case (_state)
@@ -63,10 +63,6 @@ module FSM#(
                     `CPU_ADD, `CPU_SUB, `CPU_AND, `CPU_IOR: begin
                         register_write_enable = 1; //enable reg write
                         register_data_in = result;
-                        EQUAL = z_flag;
-                    end
-                    `CPU_CMP: begin
-                        EQUAL = z_flag;
                     end
                     `CPU_LDR: begin
                         register_write_enable = 1; //enable reg write
@@ -80,7 +76,8 @@ module FSM#(
         endcase
     end 
 
-    // state machine:
+
+    // state machine secuential logic:
     always @(posedge CLK) begin //when reset is inactive (1) 
         if (!RESET) begin
         PROG_ADDR   <= 0;
@@ -90,12 +87,17 @@ module FSM#(
         _next_state      <= _DECODE;
         end else begin
             _state <= _next_state;
-        if (state == _EXECUTE) begin
-                PROG_ADDR <= PROG_ADDR + 1; // El PC solo aumenta aquí
+            if (_state == _EXECUTE) begin
+                PROG_ADDR <= PROG_ADDR + 1; // PC inc
+            end else begin
+                if (OPCODE == `CPU_ADD || OPCODE == `CPU_CMP || OPCODE == `CPU_SUB || OPCODE == `CPU_AND || OPCODE == `CPU_IOR) begin
+                    EQUAL <= z_flag;
+                end
             end
         end
     end 
     assign MEM_DATA = (MEM_CONTROL == 1'b0) ? data_rs1 : 8'bz;
 
-               
+
+
 endmodule
