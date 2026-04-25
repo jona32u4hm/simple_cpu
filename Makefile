@@ -1,6 +1,9 @@
 
+TESTER = sim/tester.v
 TB = sim/testbench.v
 OUT = build/output.out
+SRC = src/cpu.v src/alu.v src/regs.v src/ram.v src/rom.v src/fsm.v
+
 
 RAM_TB = sim/ram_tb.v
 RAM_OUT = build/ram.out
@@ -14,15 +17,15 @@ REG_OUT = build/reg.out
 ALU_TB = sim/alu_tb.v
 ALU_OUT = build/alu.out
 
-all: sim
+all: simulate
 
-sim:
+simulate:
 	@mkdir -p build
-	iverilog -o $(OUT) $(TB)
+	iverilog -o $(OUT) $(TB) $(SRC) $(TESTER)
 	vvp $(OUT)
-	gtkwave resultados.vcd
+	gtkwave cpu_simulation.vcd
 
-syn:
+synthesize:
 	@mkdir -p build
 	yosys -s syn/synth.ys
 
