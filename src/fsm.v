@@ -1,103 +1,75 @@
-`include "include/cpu_defines.vh"
-`include "include/alu_defines.vh"
+`include "inc/cpu.vh"
+`include "inc/alu.vh"
 
-module FSM#(
-        parameter pALU_WIDTH =  `ALU_OP_WIDTH,      // size of operation bus (2^1)
-        parameter pDATA_WIDTH = 8
-    )(
+module FSM(
         input  CLK, RESET,
         input [7:0] OP_ADDR,
         input [3:0] OPCODE,
         output reg EQUAL, MEM_CONTROL,
         output reg [11:0] PROG_ADDR, MEM_ADDR,
-        inout [7:0] MEM_DATA,
+        output  [7:0] MEM_DATA_in,
+        input [7:0] MEM_DATA_out,
         //ALU
-        output reg [pALU_WIDTH-1:0]  alu_op,   // (Opcode)
-        input  [pDATA_WIDTH-1:0] result, 
+        output reg [2:0]  alu_op,   // (Opcode)
+        input  [7:0] result, 
         input z_flag,
         //REGFILE 
-        input [pDATA_WIDTH-1:0]   data_rs1,
+        input [7:0]   data_r1,
         output reg register_write_enable,
-        output reg [pDATA_WIDTH-1:0]   register_data_in  // Data to write
+        output [7:0]   register_data_in  // Data to write
     );
 
-    // states:
-    localparam _DECODE     = 2'b0,
-               _EXECUTE    = 2'b1;
 
-    reg _state, _next_state;
-
-
-    initial begin
-        MEM_CONTROL <= 1;
-    end
-
-    // state machine combinational logic:
+    // combinational logic:
     always @(*) begin 
-
-        case (_state)
-            _DECODE:  begin
-                case(OPCODE) 
-                    `CPU_ADD: begin
-                        alu_op = `ALU_ADD;
-                    end
-                    `CPU_SUB, `CPU_CMP: begin
-                        alu_op = `ALU_SUB;
-                    end
-                    `CPU_AND: begin
-                        alu_op = `ALU_AND;
-                    end
-                    `CPU_IOR: begin
-                        alu_op = `ALU_IOR;
-                    end
-                    `CPU_LDR, `CPU_STR: begin
-                        MEM_ADDR = OP_ADDR;
-                    end
-                endcase
-                MEM_CONTROL = 1; // read only
-                register_write_enable = 0;
-                _next_state      = _EXECUTE;
+        // Default values
+        register_write_enable = 0;
+        MEM_CONTROL = 1; // Default to Read
+        MEM_ADDR = {4'b0000, OP_ADDR};
+        case(OPCODE) 
+            `CPU_ADD: begin
+                alu_op = `ALU_ADD;
+                register_write_enable = 1;
             end
-            _EXECUTE: begin
-                case(OPCODE) 
-                    `CPU_ADD, `CPU_SUB, `CPU_AND, `CPU_IOR: begin
-                        register_write_enable = 1; //enable reg write
-                        register_data_in = result;
-                    end
-                    `CPU_LDR: begin
-                        register_write_enable = 1; //enable reg write
-                        register_data_in = MEM_DATA;
-                    end
-                    `CPU_STR: MEM_CONTROL = 0; // write
-                endcase
-                _next_state      = _DECODE;
-
+            `CPU_SUB: begin
+                alu_op = `ALU_SUB;
+                register_write_enable = 1;
+            end
+            `CPU_CMP: begin
+                alu_op = `ALU_SUB;
+            end
+            `CPU_AND: begin
+                alu_op = `ALU_AND;
+                register_write_enable = 1;
+            end
+            `CPU_IOR: begin
+                alu_op = `ALU_IOR;
+                register_write_enable = 1;
+            end
+            `CPU_LDR: begin
+                register_write_enable = 1;
+            end
+            `CPU_STR: begin
+                MEM_CONTROL = 0; 
             end
         endcase
-    end 
-
-
+    end
+    assign MEM_DATA_in = data_r1;
+    assign register_data_in = (OPCODE == `CPU_LDR)? MEM_DATA_out : result;
     // state machine secuential logic:
-    always @(posedge CLK) begin //when reset is inactive (1) 
-        if (!RESET) begin
-        PROG_ADDR   <= 0;
-        MEM_ADDR    <= 0;
-        EQUAL       <= 0;
-        MEM_CONTROL <= 1; // read only
-        _next_state      <= _DECODE;
+    always @(posedge CLK) begin 
+        if (!RESET) begin //active reset (0)
+            PROG_ADDR   <= 0;
         end else begin
-            _state <= _next_state;
-            if (_state == _EXECUTE) begin
-                PROG_ADDR <= PROG_ADDR + 1; // PC inc
-            end else begin
-                if (OPCODE == `CPU_ADD || OPCODE == `CPU_CMP || OPCODE == `CPU_SUB || OPCODE == `CPU_AND || OPCODE == `CPU_IOR) begin
-                    EQUAL <= z_flag;
-                end
-            end
+            PROG_ADDR <= PROG_ADDR + 1; // PC inc
         end
-    end 
-    assign MEM_DATA = (MEM_CONTROL == 1'b0) ? data_rs1 : 8'bz;
-
-
+    end
+    always @(negedge CLK) begin 
+        if (!RESET) begin //active reset (0)
+            EQUAL   <= 0;
+        end else if (OPCODE == `CPU_ADD || OPCODE == `CPU_CMP || OPCODE == `CPU_SUB || OPCODE == `CPU_AND || OPCODE == `CPU_IOR) begin
+            EQUAL <= z_flag;
+        end
+    end
 
 endmodule

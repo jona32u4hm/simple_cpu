@@ -1,13 +1,11 @@
-module RAM #(
-    parameter pADDR_WIDTH = 12, 
-    parameter pDATA_WIDTH = 8   
-    )(
-    input   MEM_CONTROL,
-    input   [pADDR_WIDTH-1:0] MEM_ADDR,
-    inout   [pDATA_WIDTH-1:0] MEM_DATA
+module RAM (
+    input   MEM_CONTROL, CLK,
+    input   [11:0] MEM_ADDR,
+    input   [7:0] MEM_DATA_in,
+    output   [7:0] MEM_DATA_out
     );
     // Memory size
-    reg [pDATA_WIDTH-1:0] _memory [0:(1 << pADDR_WIDTH)-1];
+    reg [7:0] _memory [0:(1 << 12)-1];
 
     initial begin //for the simulation, initialize memory using last four digits of student ID 
         _memory[0] = 8'd4; 
@@ -24,10 +22,10 @@ module RAM #(
 
 
 
-    assign MEM_DATA = (MEM_CONTROL == 1'b1)? _memory[MEM_ADDR] : {pDATA_WIDTH{1'bz}};
-    always @(*) begin
+    assign MEM_DATA_out =  _memory[MEM_ADDR];
+    always @(negedge CLK) begin
         if (MEM_CONTROL == 0) begin
-            _memory[MEM_ADDR] = MEM_DATA;
+            _memory[MEM_ADDR] <= MEM_DATA_in;
         end 
     end
 
