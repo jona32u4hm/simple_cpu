@@ -11,7 +11,7 @@ module REG_FILE (
     assign data_r1 = _registers[select];
     assign data_r2 = _registers[!select];
 
-    always @(negedge CLK) begin
+    always @(posedge CLK) begin
         if (write_enable) begin 
             _registers[select] <= data_in;
         end

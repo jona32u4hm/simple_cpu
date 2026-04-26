@@ -23,7 +23,7 @@ module RAM (
 
 
     assign MEM_DATA_out =  _memory[MEM_ADDR];
-    always @(negedge CLK) begin
+    always @(posedge CLK) begin
         if (MEM_CONTROL == 0) begin
             _memory[MEM_ADDR] <= MEM_DATA_in;
         end 

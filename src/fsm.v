@@ -60,16 +60,12 @@ module FSM(
     always @(posedge CLK) begin 
         if (!RESET) begin //active reset (0)
             PROG_ADDR   <= 0;
+            EQUAL   <= 0;
         end else begin
             PROG_ADDR <= PROG_ADDR + 1; // PC inc
+            if (OPCODE == `CPU_ADD || OPCODE == `CPU_CMP || OPCODE == `CPU_SUB || OPCODE == `CPU_AND || OPCODE == `CPU_IOR) EQUAL <= z_flag;
         end
     end
-    always @(negedge CLK) begin 
-        if (!RESET) begin //active reset (0)
-            EQUAL   <= 0;
-        end else if (OPCODE == `CPU_ADD || OPCODE == `CPU_CMP || OPCODE == `CPU_SUB || OPCODE == `CPU_AND || OPCODE == `CPU_IOR) begin
-            EQUAL <= z_flag;
-        end
-    end
+
 
 endmodule
