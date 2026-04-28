@@ -1,20 +1,17 @@
-`include "include/alu_defines.vh"
-module ALU#(
-        parameter pALU_WIDTH =  `ALU_OP_WIDTH,      // size of operation bus (2^1)
-        parameter pDATA_WIDTH = 8
-    )(
-        input  [pDATA_WIDTH-1:0] operand_1, operand_2,
-        input  [pALU_WIDTH-1:0]  alu_op,   // (Opcode)
-        output reg [pDATA_WIDTH-1:0] result, 
-        output z_flag
-    );
+`include "inc/alu.vh"
 
-    // mapping:
+module ALU(
+        input  [7:0] operand_1, operand_2,
+        input  [2:0]  alu_op,   // (Opcode)
+        output reg [7:0] result, 
+        output z_flag
+);
     localparam _ADD    = `ALU_ADD,
                _SUB    = `ALU_SUB,
                _AND    = `ALU_AND, 
                _IOR    = `ALU_IOR, 
                _BYPASS = `ALU_BYPASS;
+
 
     always @(*) begin
         case (alu_op)
@@ -26,6 +23,8 @@ module ALU#(
         endcase
     end
 
+
     assign z_flag = (result==0)? 1 : 0;
+
 
 endmodule

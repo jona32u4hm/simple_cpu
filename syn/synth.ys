@@ -1,6 +1,4 @@
 read_verilog src/cpu.v
-read_verilog src/alu.v
-read_verilog src/regs.v
 
 hierarchy -check -top CPU
 
@@ -12,7 +10,7 @@ techmap; opt
 dfflibmap -liberty syn/cmos_cells.lib
 abc -liberty syn/cmos_cells.lib
 
-show
+show CPU
 clean
 
 write_verilog build/cpu_synth.v
