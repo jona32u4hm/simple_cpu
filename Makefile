@@ -15,6 +15,13 @@ simulate:
 	vvp $(OUT)
 	gtkwave cpu_simulation.vcd
 
+testrom2:
+	@mkdir -p build
+	iverilog -o $(OUT) $(TB) -Dtestrom2
+	vvp $(OUT)
+	gtkwave cpu_simulation.vcd
+
+
 synthesize:
 	@mkdir -p build
 	yosys -s syn/synth.ys

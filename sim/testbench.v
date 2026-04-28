@@ -5,13 +5,21 @@
 
 
 `include "src/ram.v"
-`include "src/rom.v"
 `include "sim/tester.v"
 
+
+`ifdef testrom2
+    `include "src/testrom2.v"
+`else
+    `include "src/rom.v"
+`endif
 
 
 
 module cpu_tb();
+
+
+
     // CPU RAM and ROM connections
     wire clk, reset;
     wire ab_select;
